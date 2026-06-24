@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 50px auto; display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;">
+
+  <div style="flex: 1; min-width: 420px; background: white; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.05); padding: 40px;">
+    <h2 style="text-align:center; color:#6d28d9; font-weight:700;">Enter Text or Use Mic</h2>
+    <form method="post" style="margin-top: 30px;">
+      {% csrf_token %}
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <input type="text" name="sen" id="speechToText" placeholder="Type or speak your sentence..."
+          style="flex-grow:1; padding:12px; border:1px solid #d1d5db; border-radius:10px; font-size:15px; outline:none;">
+        <button type="button" onclick="record()" 
+          style="background:#ede9fe; border:none; border-radius:10px; padding:10px 12px; cursor:pointer;">
+          <img src="{% static 'mic3.png' %}" height="28px" width="28px" alt="Mic">
+        </button>
+      </div>
+
+      <button type="submit"
+        style="margin-top: 20px; width: 100%; padding: 12px; background-color: #8b5cf6;
+        color:white; border:none; border-radius:10px; font-weight:600; font-size:16px; cursor:pointer;">
+        Submit
+      </button>
+    </form>
+
+    {% if text %}
+    <div style="margin-top: 40px;">
+      <p style="color:#6d28d9; font-weight:600; margin-bottom:8px;">Entered Text:</p>
+      <p style="background:#f3f4f6; padding:12px 16px; border-radius:10px; color:#333;">{{ text }}</p>
+
+      <p style="color:#6d28d9; font-weight:600; margin-top:20px;">Key Words:</p>
+      <ul id="list" style="display:flex; flex-wrap:wrap; gap:10px; list-style:none; padding:0; margin-top:10px;">
+        {% for word in words %}
+        <li style="background:#ede9fe; color:#4b5563; padding:6px 12px; border-radius:8px; font-size:14px;">{{ word }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+
+  <div style="flex: 1; min-width: 420px; background: white; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.05); padding: 40px; text-align:center;">
+    <h2 style="color:#6d28d9; font-weight:700; margin-bottom:20px;">Sign Language Animation</h2>
+
+    <video id="videoPlayer" width="100%" height="350" preload="auto" autoplay
+      style="border-radius:16px; box-shadow:0 4px 15px rgba(0,0,0,0.1); margin-bottom:20px;">
+      <source src="" type="video/mp4">
+      Your browser does not support HTML5 video.
+    </video>
+
+    <button onclick="playPause()" 
+      style="background-color: #8b5cf6; color:white; border:none; border-radius:10px;
+      padding:12px 30px; font-weight:600; font-size:16px; cursor:pointer;">
+      ▶️ Play / Pause
+    </button>
+  </div>
+</div>
+
+<script>
+  // 🎙️ Speech-to-text
+  function record() {
+    var recognition = new webkitSpeechRecognition();
+    recognition.lang = 'en-IN';
+    recognition.onresult = function(event) {
+      document.getElementById('speechToText').value = event.results[0][0].transcript;
+    }
+    recognition.start();
+  }
+
+  // 🎬 Video Playback
+  function play() {
+    var videoSource = [];
+    var videos = document.getElementById("list").getElementsByTagName("li");
+    for (let j = 0; j < videos.length; j++) {
+      videoSource[j] = "/static/" + videos[j].innerHTML + ".mp4";
+    }
+
+    let i = 0;
+    const videoPlayer = document.getElementById("videoPlayer");
+
+    function videoPlay(num) {
+      videos[num].style.color = "#8b5cf6";
+      videos[num].style.fontWeight = "600";
+      videoPlayer.src = videoSource[num];
+      videoPlayer.load();
+      videoPlayer.play();
+    }
+
+    videoPlayer.addEventListener('ended', function() {
+      videos[i].style.color = "#4b5563";
+      videos[i].style.fontWeight = "normal";
+      i++;
+      if (i < videoSource.length) videoPlay(i);
+    });
+
+    if (videos.length > 0) videoPlay(0);
+  }
+
+  function playPause() {
+    const player = document.getElementById("videoPlayer");
+    if (player.paused) play();
+    else player.pause();
+  }
+</script>
+{% endblock %}
+

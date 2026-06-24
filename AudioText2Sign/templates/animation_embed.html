@@ -1,0 +1,283 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Text to ISL Sign Widget</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --background: #ffffff;
+      --panel: #ffffff;
+      --muted: #f4f5f7;
+      --border: #d9dce3;
+      --text: #1f2937;
+      --subtle: #6b7280;
+      --primary: #8b5cf6;
+      --primary-dark: #6d28d9;
+      --primary-soft: #ede9fe;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: transparent;
+      color: var(--text);
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+    }
+
+    .sign-widget {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
+      gap: 24px;
+      width: 100%;
+      padding: 4px;
+    }
+
+    .panel {
+      min-width: 0;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 22px;
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      color: var(--primary-dark);
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    input {
+      min-width: 0;
+      flex: 1;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.16);
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .mic-button {
+      width: 52px;
+      flex: 0 0 52px;
+      background: var(--primary-soft);
+    }
+
+    .submit-button,
+    .play-button {
+      min-height: 44px;
+      padding: 0 18px;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 15px;
+    }
+
+    .submit-button:hover,
+    .play-button:hover {
+      background: var(--primary-dark);
+    }
+
+    .result {
+      margin-top: 24px;
+    }
+
+    .label {
+      margin: 0 0 8px;
+      color: var(--primary-dark);
+      font-weight: 700;
+    }
+
+    .entered-text {
+      margin: 0 0 18px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: var(--muted);
+      color: var(--text);
+    }
+
+    #list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    #list li {
+      border-radius: 8px;
+      background: var(--primary-soft);
+      color: #4b5563;
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+
+    .video-panel {
+      text-align: center;
+    }
+
+    video {
+      width: 100%;
+      height: min(48vw, 360px);
+      min-height: 260px;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      background: #111827;
+      object-fit: contain;
+    }
+
+    .empty-state {
+      margin: 12px 0 0;
+      color: var(--subtle);
+      font-size: 14px;
+    }
+
+    @media (max-width: 820px) {
+      .sign-widget {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        padding: 18px;
+      }
+
+      video {
+        height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="sign-widget">
+    <section class="panel">
+      <h2>Enter Text or Use Mic</h2>
+      <form method="post">
+        {% csrf_token %}
+        <div class="input-row">
+          <input type="text" name="sen" id="speechToText" placeholder="Type or speak your sentence..." value="{{ text|default:'' }}">
+          <button class="mic-button" type="button" onclick="record()" aria-label="Start speech recognition">
+            <img src="{% static 'mic3.png' %}" height="26" width="26" alt="">
+          </button>
+        </div>
+        <button class="submit-button" type="submit">Generate Sign Animation</button>
+      </form>
+
+      {% if text %}
+      <div class="result">
+        <p class="label">Entered Text</p>
+        <p class="entered-text">{{ text }}</p>
+
+        <p class="label">Generated Signs</p>
+        <ul id="list">
+          {% for word in words %}
+          <li>{{ word }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% else %}
+      <p class="empty-state">Try phrases like "hello", "thank you", "good", or "I will go home".</p>
+      <ul id="list" hidden></ul>
+      {% endif %}
+    </section>
+
+    <section class="panel video-panel">
+      <h2>Sign Language Animation</h2>
+      <video id="videoPlayer" preload="auto" autoplay controls>
+        <source src="" type="video/mp4">
+        Your browser does not support HTML5 video.
+      </video>
+      <button class="play-button" type="button" onclick="playPause()">Play / Pause</button>
+    </section>
+  </main>
+
+  <script>
+    function record() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Speech recognition is not supported in this browser.");
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = "en-IN";
+      recognition.onresult = function(event) {
+        document.getElementById("speechToText").value = event.results[0][0].transcript;
+      };
+      recognition.start();
+    }
+
+    function play() {
+      const videoSource = [];
+      const list = document.getElementById("list");
+      const videos = list ? list.getElementsByTagName("li") : [];
+
+      for (let j = 0; j < videos.length; j++) {
+        videoSource[j] = "/static/" + videos[j].innerHTML + ".mp4";
+      }
+
+      let i = 0;
+      const videoPlayer = document.getElementById("videoPlayer");
+
+      function videoPlay(num) {
+        videos[num].style.color = "#8b5cf6";
+        videos[num].style.fontWeight = "700";
+        videoPlayer.src = videoSource[num];
+        videoPlayer.load();
+        videoPlayer.play();
+      }
+
+      videoPlayer.onended = function() {
+        videos[i].style.color = "#4b5563";
+        videos[i].style.fontWeight = "400";
+        i++;
+        if (i < videoSource.length) videoPlay(i);
+      };
+
+      if (videos.length > 0) videoPlay(0);
+    }
+
+    function playPause() {
+      const player = document.getElementById("videoPlayer");
+      if (player.paused) play();
+      else player.pause();
+    }
+
+    window.addEventListener("load", function() {
+      const list = document.getElementById("list");
+      if (list && list.getElementsByTagName("li").length > 0) {
+        play();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Clario</title>
+<style>
+/* --- Base Styles --- */
+body {
+  background-color: #f5f5ff;
+  color: #333333;
+  font-family: "Segoe UI", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- New Clario Navbar Styles --- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 5%;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  height: 50px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo-icon {
+  background-color: #6366f1;
+  color: white;
+  padding: 8px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 20px;
+  margin-right: 10px;
+  width: 24px;
+  text-align: center;
+}
+
+.logo-text {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
+  margin-left: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #4b5563;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+  background-color: #ede9fe;
+  color: #6d28d9;
+}
+
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Adds space between buttons */
+}
+
+.theme-toggle {
+  background-color: #eef2ff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6366f1;
+  font-size: 20px; /* Icon size */
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background-color: #e0e7ff;
+}
+
+.btn-get-started {
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-get-started:hover {
+  background: linear-gradient(90deg, #7c3aed, #5b21b6);
+}
+
+/* Simple style for Log In button */
+.btn-login {
+  color: #4b5563;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 10px 12px;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+   background-color: #f3f4f6;
+}
+
+/* Style for Log Out button */
+.btn-logout {
+  background-color: #fee2e2;
+  color: #dc2626;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.btn-logout:hover {
+  background-color: #fecaca;
+}
+
+/* --- Old Form/Button Styles (FIXED) --- */
+.form-style {
+  max-width: 450px;
+  margin: 40px auto;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  padding: 30px 40px;
+}
+
+.form-style h1 {
+  font-size: 24px;
+  color: #6d28d9;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-style input[type="text"],
+.form-style input[type="password"],
+.form-style textarea,
+.form-style select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+  margin-bottom: 16px;
+  transition: border-color 0.3s;
+}
+
+.form-style input:focus,
+.form-style textarea:focus {
+  border-color: #8b5cf6;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+}
+
+/* == CHANGED THIS SECTION == */
+/* Buttons */
+.form-style button, .submit {
+  width: 100%;
+  padding: 12px;
+  background-color: #8b5cf6; /* <-- REMOVED GRADIENT */
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.form-style button:hover,
+.submit:hover {
+  background-color: #7c3aed; /* <-- REMOVED GRADIENT, added solid hover */
+}
+/* == END OF CHANGE == */
+
+
+/* Mic + input row */
+.mytext {
+  border: 1px solid #d1d5db;
+  border-right: none;
+  padding: 10px;
+  border-radius: 8px 0 0 8px;
+  width: 300px;
+  outline: none;
+}
+
+.mic {
+  border: 1px solid #d1d5db;
+  background: #ede9fe;
+  border-radius: 0 8px 8px 0;
+  width: 5em;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.mic:hover {
+  background: #ddd6fe;
+}
+
+/* Contact/About Titles */
+h2 {
+  color: #6d28d9;
+  font-weight: 700;
+}
+
+/* Errors */
+.errorlist {
+  color: red;
+  font-weight: bold;
+}
+
+/* Split panels (for converter UI) */
+.split {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 50;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.left {
+  left: 15;
+}
+
+.right {
+  right: 0;
+  border-left: 1px solid #e5e7eb;
+}
+
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a href="{% url 'home' %}" class="logo">
+    <span class="logo-icon">C</span>
+    <span class="logo-text">Clario</span>
+  </a>
+
+  <nav>
+    <ul class="nav-links">
+      <li><a href="#">Live Captioning</a></li>
+      <li><a href="{% url 'animation' %}">Text to Avatar</a></li>
+      <li><a href="{% url 'contact' %}">Contact</a></li>
+      <li><a href="{% url 'about' %}">About</a></li>
+    </ul>
+  </nav>
+
+  <div class="nav-buttons">
+    <button class="theme-toggle" aria-label="Toggle dark mode">
+      &#9728;
+    </button>
+    
+    {% if user.is_authenticated %}
+      <a href="{% url 'logout' %}" class="btn-logout">Log Out</a>
+    {% else %}
+      <a href="{% url 'login' %}" class="btn-login">Log In</a>
+      <a href="{% url 'signup' %}" class="btn-get-started">Get Started</a>
+    {% endif %}
+  </div>
+</header>
+
+<div class="wrapper" >
+  {% block content %}
+  {% endblock %}
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+/* ui-enhancements.css */
+
+/* Gradient Text (Now uses your theme!) */
+.gradient-text {
+  background: linear-gradient(90deg, hsl(var(--accent)), hsl(var(--primary)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Card & Glass (Now uses your theme!) */
+.glass {
+  background: hsl(var(--card) / 0.1);
+  border: 1px solid hsl(var(--foreground) / 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.glass:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px hsl(var(--primary) / 0.2);
+}
+
+/* --- Button Glare Animation --- */
+.btn-glare-effect {
+  position: relative;
+  overflow: hidden; 
+  transition: all 0.3s ease;
+}
+.btn-glare-effect .glare {
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transform: skewX(-25deg);
+  transition: left 0.6s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+.btn-glare-effect:hover .glare {
+  left: 150%;
+}
+
+/* --- ✅ NEW: Hero Button Shimmer --- */
+/* Add "btn-hero-shimmer" to your hero buttons */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.btn-hero-shimmer {
+  /* Assumes your hero variant uses --gradient-hero */
+  background-image: var(--gradient-hero);
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite paused; /* Paused by default */
+  transition: background-position 0.5s ease;
+}
+.btn-hero-shimmer:hover {
+  animation-play-state: running; /* Run animation on hover */
+  background-position: 200% 0; /* Also move position on hover */
+}
+
+
+/* --- ✅ NEW: Typewriter Cursor --- */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.type-cursor {
+  animation: blink 0.7s infinite;
+  margin-left: 0.25rem;
+}
+
+/* --- Page Entrance Animation --- */
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.page-enter {
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+
+.keyfeature-card {
+  /* Creates a gradient using your theme's primary and accent colors */
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.05), hsl(var(--accent) / 0.05));
+  border: 1px solid hsl(var(--primary) / 0.1);
+  border-radius: 1.5rem; /* Matches your rounded-2xl/3xl style */
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.keyfeature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px hsl(var(--primary) / 0.1);
+  border-color: hsl(var(--primary) / 0.3);
+}
