@@ -6,7 +6,7 @@
 
 ## 🚀 Overview
 
-**Clario** is an AI-powered accessibility tool designed to make spoken and online audio content understandable for everyone — including DHH (Deaf and Hard-of-Hearing) individuals.  
+**Clario** is an AI-powered accessibility platform designed to make spoken and online audio content understandable for everyone — including DHH (Deaf and Hard-of-Hearing) individuals.  
 
 It captures **speech, YouTube videos, or podcasts**, converts them into text using **Faster-Whisper**, simplifies the text using **Groq’s LLM**, and translates it into multiple **Indian languages**.
 
